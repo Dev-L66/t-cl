@@ -1,0 +1,156 @@
+import { CiImageOn } from "react-icons/ci";
+import { MdOutlineEmojiEmotions } from "react-icons/md";
+import { IoCloseCircleOutline } from "react-icons/io5";
+import { useEffect, useRef, useState } from "react";
+import SmileyPicker from "./SmileyPicker";
+
+const CreatePost = () => {
+  const [picker, setPicker] = useState(false);
+  const [text, setText] = useState("");
+  const [image, setImage] = useState("");
+  const imageRef = useRef(null);
+  const textAreaRef = useRef(null);
+  const [charCount, setCharCount] = useState(0);
+  const [maxChars] = useState(280);
+  const[success, setSuccess] = useState(false);
+
+  useEffect(()=>{
+   setCharCount(text.length);
+  },[text])
+
+  useEffect(()=>{
+  textAreaRef.current.style.height = "auto";
+  textAreaRef.current.style.height = textAreaRef.current.scrollHeight + "px";
+  },[text])
+
+  const handleTextChange = (e)=>{
+    const inputText = e.target.value;
+    if(inputText.length <= maxChars){
+      setText(inputText);
+    }
+
+  }
+
+  
+  const handlePicker = (e) => {
+    e.preventDefault();
+    setPicker(!picker);
+  };
+
+  const handleEmojiSelect = (emoji) => {
+    if (text.length + emoji.length <= maxChars) {
+    setText((prev) => prev + emoji);
+  }
+    setPicker(false);
+  };
+
+  const handleImageChange = (e) => {
+    const file = e.target.files[0];
+    if (file) {
+      setImage(file);
+      const reader = new FileReader();
+      reader.onloadend = () => {
+        setImage(reader.result);
+      };
+      reader.readAsDataURL(file);
+    }
+  };
+  const handleSubmit = (e)=>{
+    e.preventDefault();
+    setSuccess(true); 
+  }
+  useEffect(()=>{
+    if(success){
+     const timer =  setTimeout(()=>{
+        setSuccess(false);
+      },2000)
+       return()=>{
+      clearTimeout(timer);
+    }
+    } 
+    },[success])
+  return (
+    <div className="p-8 border-b border-primary">
+      <div className="flex p-5 gap-3">
+        <div className="flex-shrink-0">
+          <img
+            src={"/avatars/boy1.png"}
+            loading="lazy"
+            alt="avatar"
+            className="w-10 h-10"
+          />
+        </div>
+        <form className="w-full" onSubmit={handleSubmit}>
+          
+          <textarea
+            ref={textAreaRef}
+            value={text}
+            onChange={handleTextChange}
+            placeholder="What is happening?!"
+            rows="1"
+            className="text-lg border-t text-secondary border-none textarea resize-none w-full focus:outline-none"
+          ></textarea>
+          <div className="relative">
+            {image && (
+              <>
+                <p>
+                  <IoCloseCircleOutline
+                    onClick={() => {
+                      setImage(null);
+                      imageRef.current.value = null;
+                    }}
+                  />
+                </p>
+                <div className="flex justify-center items-center">
+                  <img
+                    src={image}
+                    className="object-contain"
+                    alt="previewImage"
+                    style={{ maxWidth: "100%", maxHeight: "200px" }}
+                  />
+                </div>
+              </>
+            )}
+          </div>
+          <div className="border-primary flex justify-between pt-2 border-t ">
+            <div className="flex gap-3 text-2xl font-bold text-primary">
+              <CiImageOn onClick={() => imageRef.current.click()} />
+
+              <input
+                type="file"
+                accept="image/*"
+                onChange={handleImageChange}
+                hidden
+                ref={imageRef}
+              />
+              <MdOutlineEmojiEmotions onClick={handlePicker} />
+
+              <div className="absolute bottom-15"> 
+                {picker && (
+                <SmileyPicker onEmojiSelect={handleEmojiSelect} />
+                )}
+              </div>
+            </div>
+            <div className="text-secondary flex justify-end w-100 p-2">
+              <span>{charCount}/{maxChars}</span>
+            </div>
+            
+            {!picker && (
+              <button type="submit" disabled={charCount > maxChars || (charCount === 0 && !image)} className={`disabled:opacity-25 bg-primary text-secondary text-xs font-bold px-4 py-2 rounded-full`}>
+                Post
+              </button>
+            )}
+          </div>
+        </form>
+      </div>
+      {success && (<div role="alert" className="alert bg-primary text-secondary">
+  <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6 shrink-0 stroke-current" fill="none" viewBox="0 0 24 24">
+    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+  </svg>
+  <span>Post created successfully!</span>
+</div>)}
+    </div>
+  );
+};
+
+export default CreatePost;
