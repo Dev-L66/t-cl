@@ -36,12 +36,12 @@ const Navbar = () => {
                   <FaHome className="text-xl" /> <p>Home</p>
                 </div>
               </NavLink>
-              <NavLink to={`/`}>
+              <NavLink to={`/notifications`}>
                 <div className={`flex gap-2 items-center`}>
                   <FaBell className="text-lg" /> <p>Notification</p>
                 </div>
               </NavLink>
-              <NavLink to={`/notifications`}>
+              <NavLink to={`/profile/${data?.username}`}>
                 <div className={`flex gap-2 items-center`}>
                   <FaUser className="text-lg" /> <p>Profile</p>
                 </div>

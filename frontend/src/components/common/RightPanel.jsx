@@ -6,7 +6,7 @@ import { Link } from "react-router";
 const RightPanel = () => {
   const [loading, setLoading] = useState(false);
   return (
-    <div className="hidden  md:flex md:justify-center md:items-center h-screen p-4">
+    <div className="hidden sticky top-0 md:flex md:justify-center md:items-center h-screen p-4">
       <div className="bg-seconadary rounded-2xl p-4 ">
         <h2 className="font-bold text-lg mb-4 px-2">Who to follow</h2>
         {/* {loading && (<div className="">

@@ -2,17 +2,19 @@ import { Route, Routes } from "react-router";
 import HomePage from "./pages/home/HomePage";
 import LoginPage from "./pages/auth/login/LoginPage";
 import SignupPage from "./pages/auth/signup/SignupPage";
+import NotificationPage from "./pages/notification/NotificationPage";
 // import Sidebar from "./components/common/Sidebar";
 import RightPanel from "./components/common/RightPanel";
 import { useState } from "react";
 import Navbar from "./components/common/Navbar";
+import ProfilePage from "./pages/profile/ProfilePage";
 
 const App = () => {
   // const [isSidebarOpen, setSidebarOpen] = useState(false);
   return (
     <>
       <div
-        className="grid md:grid-cols-[1fr_5fr_1fr] grid-cols-1" >
+        className="grid md:grid-cols-[1fr_3fr_1fr] grid-cols-1" >
         <div>
           <Navbar/>
         </div>
@@ -22,10 +24,12 @@ const App = () => {
             <Route path="/" element={<HomePage />} />
             <Route path="/login" element={<LoginPage />} />
             <Route path="/signup" element={<SignupPage />} />
+            <Route path="/notifications" element={<NotificationPage />} />
+            <Route path="/profile/:username" element={<ProfilePage />} />
           </Routes>
         </div>
 
-        <div className="flex justify-center items-center">
+        <div className="flex ">
           <RightPanel />
         </div>
       </div>

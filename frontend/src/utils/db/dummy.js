@@ -1,7 +1,7 @@
 export const POSTS = [
 	{
 		_id: "1",
-		text: "Let's build a fullstack WhatsApp clone with NEXT.JS 14 😍",
+		text: "lorem ipsum dolor sit amet consectetur adipisicing elit. Let's build a fullstack WhatsApp clone with NEXT.JS 14 lorem ipsum dolor sit amet consectetur adipisicing elit. Let's build a fullstack WhatsApp clone with NEXT.JS 14 😍lorem ipsum dolor sit amet consectetur adipisicing elit. Let's build a fullstack WhatsApp clone with NEXT.JS 14 😍lorem ipsum dolor sit amet consectetur adipisicing elit. Let's build a fullstack WhatsApp clone with NEXT.JS 14 😍",
 		img: "/posts/post1.png",
 		user: {
 			username: "johndoe",
@@ -66,13 +66,39 @@ export const POSTS = [
 		comments: [
 			{
 				_id: "1",
-				text: "Nice Tutorial",
+				text: "My favorite. lorem ipsum dolor sit amet consectetur adipisicing elit. Let's build a fullstack WhatsApp clone with NEXT.JS 14",
 				user: {
 					username: "janedoe",
 					profileImg: "/avatars/girl3.png",
 					fullName: "Jane Doe",
 				},
+
+				
 			},
+			{
+				_id: "2",
+				text: "My favorite. lorem ipsum dolor sit amet consectetur adipisicing elit. Let's build a fullstack WhatsApp clone with NEXT.JS 14",
+				user: {
+					username: "janedoe",
+					profileImg: "/avatars/girl3.png",
+					fullName: "Jane Doe",
+				},
+
+				
+			},
+			
+			{
+				_id: "3",
+				text: "My favorite. lorem ipsum dolor sit amet consectetur adipisicing elit. Let's build a fullstack WhatsApp clone with NEXT.JS 14",
+				user: {
+					username: "janedoe",
+					profileImg: "/avatars/girl3.png",
+					fullName: "Jane Doe",
+				},
+
+				
+			},
+			
 		],
 		likes: [
 			"6658s891",
