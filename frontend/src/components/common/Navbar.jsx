@@ -26,7 +26,7 @@ const Navbar = () => {
             className="drawer-overlay"
           ></label>
 
-          <ul className="menu flex flex-col items-center bg-primary min-h-full w-40 ">
+          <ul className="menu flex flex-col items-center  min-h-full w-40 ">
             <div className={`flex justify-start p-5`}>
               <Logo height="100" width="100" />
             </div>

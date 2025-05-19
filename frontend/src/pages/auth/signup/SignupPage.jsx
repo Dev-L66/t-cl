@@ -4,22 +4,52 @@ import { RiLockPasswordLine } from "react-icons/ri";
 import { MdDriveFileRenameOutline } from "react-icons/md";
 import Logo from "../../../components/svgs/Logo";
 import { useState } from "react";
-
+import { useMutation, useQueryClient } from "@tanstack/react-query";
+import toast from "react-hot-toast";
+import { Link, useNavigate } from "react-router";
+import LoadingSpinner from "../../../components/common/LoadingSpinner";
 const SignupPage = () => {
-  const [Login, setLogin] = useState(false);
   const [formData, setFormData] = useState({
     email: "",
     username: "",
-    fullname: "",
+    fullName: "",
     password: "",
   });
+  const navigate = useNavigate();
+  const queryClient = useQueryClient();
+  const { mutate, isError, isPending, error } = useMutation({
+    mutationFn: async ({ username, fullName, password, email }) => {
+      try {
+        const res = await fetch("api/auth/signup", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({ username, fullName, password, email }),
+        });
 
-  const loginSignupHandler = () => {
-    setLogin(!Login);
-  };
-  const handleFormSubmit = (e) => {
+        const data = await res.json();
+        if (!res.ok) throw new Error(data.message || "Something went wrong");
+        console.log(data);
+        return data;
+      } catch (error) {
+        console.error(error);
+        throw error;
+      }
+    },
+    onSuccess: () => {
+      toast.success("Account created successfully");
+      queryClient.invalidateQueries({ queryKey: ["authUser"] });
+    },
+    onError: (data) => {
+      toast.error(data.message);
+      queryClient.invalidateQueries({ queryKey: ["authUser"] });
+    },
+  });
+
+  const handleFormSubmit = async (e) => {
     e.preventDefault();
-    console.log(formData);
+    mutate(formData);
   };
 
   const handleInputChange = (e) => {
@@ -34,29 +64,26 @@ const SignupPage = () => {
       </div>
       <div className="flex justify-center items-center w-full md:w-[50%] p-3">
         <div>
-          <h1 className="text-6xl font-bold p-3 fontColor">
-            {Login ? "Login." : "Join today."}
-          </h1>
+          <h1 className="text-6xl font-bold p-3 fontColor">Join today.</h1>
           <form onSubmit={handleFormSubmit}>
             <div>
-              {!Login && (
-                <div className="p-3">
-                  <label className="input validator rounded-xl focus-within:outline-none focus-within:border-primary">
-                    <CiMail />
-                    <input
-                      type="email"
-                      required
-                      placeholder="Email"
-                      minLength="3"
-                      maxLength="30"
-                      title="enter a valid email"
-                      value={formData.email}
-                      name="email"
-                      onChange={handleInputChange}
-                    />
-                  </label>
-                </div>
-              )}
+              <div className="p-3">
+                <label className="input validator rounded-xl focus-within:outline-none focus-within:border-primary">
+                  <CiMail />
+                  <input
+                    type="email"
+                    required
+                    placeholder="Email"
+                    minLength="3"
+                    maxLength="30"
+                    title="enter a valid email"
+                    value={formData.email}
+                    name="email"
+                    onChange={handleInputChange}
+                  />
+                </label>
+              </div>
+
               <div className="p-3">
                 <label className="input validator rounded-xl focus-within:outline-none focus-within:border-primary">
                   <FaRegUser />
@@ -75,26 +102,26 @@ const SignupPage = () => {
                   />
                 </label>
               </div>
-              {!Login && (
-                <div className="p-3">
-                  <label className="input validator rounded-xl focus-within:outline-none focus-within:border-primary">
-                    <MdDriveFileRenameOutline />
-                    <input
-                      className="bg-none"
-                      type="text"
-                      required
-                      placeholder="Full Name"
-                      pattern="[A-Za-z0-9\-]{2,}( [A-Za-z0-9\-]{2,})*"
-                      minLength="3"
-                      maxLength="30"
-                      title="Only letters, numbers or dash"
-                      value={formData.fullname}
-                      name="fullname"
-                      onChange={handleInputChange}
-                    />
-                  </label>
-                </div>
-              )}
+
+              <div className="p-3">
+                <label className="input validator rounded-xl focus-within:outline-none focus-within:border-primary">
+                  <MdDriveFileRenameOutline />
+                  <input
+                    className="bg-none"
+                    type="text"
+                    required
+                    placeholder="Full Name"
+                    pattern="[A-Za-z0-9\-]{2,}( [A-Za-z0-9\-]{2,})*"
+                    minLength="3"
+                    maxLength="30"
+                    title="Only letters, numbers or dash"
+                    value={formData.fullName}
+                    name="fullName"
+                    onChange={handleInputChange}
+                  />
+                </label>
+              </div>
+
               <div className="p-3">
                 <label className="input validator rounded-xl focus-within:outline-none focus-within:border-primary">
                   <RiLockPasswordLine />
@@ -103,8 +130,8 @@ const SignupPage = () => {
                     type="password"
                     required
                     placeholder="Password"
-                    minLength="3"
-                    maxLength="30"
+                    minLength="6"
+                    maxLength="20"
                     value={formData.password}
                     name="password"
                     onChange={handleInputChange}
@@ -116,25 +143,24 @@ const SignupPage = () => {
                 <button
                   className="w-full btn btn-primary rounded-xl fontColor"
                   type="submit"
+                  disabled={isPending}
                 >
-                  {Login ? "Login" : "Signup"}
+                  {isPending ? <LoadingSpinner /> : "Signup"}
                 </button>
               </div>
               <div>
-                <h2 className="font-bold">
-                  {Login
-                    ? "Don't have an account?"
-                    : "Already have an account?"}
-                </h2>
-                <button
-                  onClick={loginSignupHandler}
-                  className="w-full btn bg-none border-primary rounded-xl fontColor"
-                  type="submit"
+                <h2 className="font-bold">Already have an account?</h2>
+                <Link
+                  to="/login"
+                  className={`w-full btn bg-none border-primary rounded-xl fontColor ${
+                    isPending ? "opacity-50 pointer-events-none" : ""
+                  }`}
                 >
-                  {Login ? "Signup" : "Login"}
-                </button>
+                  Login
+                </Link>
               </div>
             </div>
+            {isError && <p className="text-red-500">{error.message}</p>}
           </form>
         </div>
       </div>

@@ -15,6 +15,7 @@ const ProfilePage = () => {
   const [coverImg, setCoverImg] = useState(null);
   const [feedType, setFeedType] = useState("posts");
   const isLoading = false;
+  const isMyProfile = false;
   const handleImgChange = (e, state) => {
     const file = e.target.files[0];
     if (file) {
@@ -49,12 +50,13 @@ const ProfilePage = () => {
         </div>
         <div>
           <p>{user?.fullName}</p>
-          <p>{POSTS?.length}</p>
+          <p>{POSTS?.length} Posts</p>
         </div>
       </div>
 
       <figure className="relative">
         <img
+        accept="image/*"
           className="w-full object-cover h-80 border-b border-opacity-50  border-primary"
           src={coverImg || user?.coverImg || "/cover.png"}
           alt="Cover"
@@ -67,6 +69,7 @@ const ProfilePage = () => {
             className="text-xl text-white cursor-pointer"
           />
           <input
+          accept="image/*"
             type="file"
             ref={coverImgRef}
             className="hidden"
@@ -105,9 +108,10 @@ const ProfilePage = () => {
           <Link className="text-primary text-sm font-bold" to={user?.link}>
             {user?.link}
           </Link>
-          <div className="flex flex-1 justify-end">
+          {!isMyProfile && (<div className="flex flex-1 justify-end"><button className="btn btn-primary rounded-full ">follow</button></div>)}
+          {isMyProfile && (<div className="flex flex-1 justify-end">
             <EditProfileModal />
-          </div>
+          </div>)}
         </div>
         <div className="text-sm flex gap-5 mt-4 ">
           <p className="text-secondary">

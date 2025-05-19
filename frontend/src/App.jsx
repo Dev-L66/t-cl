@@ -3,20 +3,17 @@ import HomePage from "./pages/home/HomePage";
 import LoginPage from "./pages/auth/login/LoginPage";
 import SignupPage from "./pages/auth/signup/SignupPage";
 import NotificationPage from "./pages/notification/NotificationPage";
-// import Sidebar from "./components/common/Sidebar";
 import RightPanel from "./components/common/RightPanel";
-import { useState } from "react";
 import Navbar from "./components/common/Navbar";
 import ProfilePage from "./pages/profile/ProfilePage";
+import { Toaster } from "react-hot-toast";
 
 const App = () => {
-  // const [isSidebarOpen, setSidebarOpen] = useState(false);
   return (
     <>
-      <div
-        className="grid md:grid-cols-[1fr_3fr_1fr] grid-cols-1" >
+      <div className="grid md:grid-cols-[1fr_3fr_1fr] grid-cols-1">
         <div>
-          <Navbar/>
+          <Navbar />
         </div>
 
         <div>
@@ -32,6 +29,7 @@ const App = () => {
         <div className="flex ">
           <RightPanel />
         </div>
+        <Toaster/>
       </div>
     </>
   );

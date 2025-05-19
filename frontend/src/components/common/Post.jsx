@@ -98,7 +98,7 @@ const Post = ({ post }) => {
                     {post.comments.length === 0
                       ? "No comments"
                       : post.comments.map((comment) => (
-                          <div className="flex flex-col gap-2 text-xs bordr border-b border-primary mb-5 w-full ">
+                          <div key={comment._id} className="flex flex-col gap-2 text-xs bordr border-b border-primary mb-5 w-full ">
                             <figure className="flex gap-2 text-sm text-secondary">
                               <img
                                 src={
@@ -107,7 +107,7 @@ const Post = ({ post }) => {
                                 alt="ProfileImage"
                                 className="h-8 w-8 rounded-full"
                               />
-                              <div key={comment._id}>
+                              <div>
                                 <p className="text-xs mb-2">
                                   {postOwner.fullName}{" "}
                                   <span className="text-primary">
