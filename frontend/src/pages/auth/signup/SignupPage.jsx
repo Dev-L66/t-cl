@@ -43,7 +43,6 @@ const SignupPage = () => {
     },
     onError: (data) => {
       toast.error(data.message);
-      queryClient.invalidateQueries({ queryKey: ["authUser"] });
     },
   });
 
