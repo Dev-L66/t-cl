@@ -1,6 +1,7 @@
 import Post from "../models/post.model.js";
 import User from "../models/user.model.js";
 import Notification from "../models/notification.model.js";
+import { v2 as cloudinary } from "cloudinary";
 
 //get all posts
 export const getAllPosts = async (req, res) => {
@@ -24,7 +25,8 @@ export const getAllPosts = async (req, res) => {
 //create post
 export const createPost = async (req, res) => {
   try {
-    const { text, img } = req.body;
+    const { text} = req.body;
+    let { img } = req.body;
     const userId = req.user._id;
 
     const user = await User.findById(userId);
@@ -36,17 +38,19 @@ export const createPost = async (req, res) => {
       return res.status(400).json({ error: "Post must have text or image" });
     }
 
+    
     if (img) {
       const uploadedResponse = await cloudinary.uploader.upload(img);
       img = uploadedResponse.secure_url;
     }
-
+  
     const newPost = await Post.create({
       user: userId,
       text,
       img,
     });
-
+    await newPost.save();
+    console.log(newPost);
     return res.status(201).json(newPost);
   } catch (error) {
     console.log(`Error in createPost controller: ${error.message}`);

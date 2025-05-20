@@ -6,9 +6,21 @@ import { BrowserRouter } from "react-router";
 import {QueryClient, QueryClientProvider} from "@tanstack/react-query";
 
 const queryClient = new QueryClient({
-  defautOptions:{
+  defaultOptions:{
     queries:{
       refetchOnWindowFocus: false,
+       queryFn: async({queryKey})=>{
+        try{
+          const res = await fetch(queryKey[0]);
+          const data = await res.json();
+          if(!res.ok) throw new Error(data.message || "Something went wrong.");
+          return data;
+          
+        }catch(error){
+          console.error(error);
+          throw error;
+        }
+      }
     }
   }
 });

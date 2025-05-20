@@ -3,6 +3,8 @@ import { MdOutlineEmojiEmotions } from "react-icons/md";
 import { IoCloseCircleOutline } from "react-icons/io5";
 import { useEffect, useRef, useState } from "react";
 import SmileyPicker from "./SmileyPicker";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import { toast } from "react-hot-toast";
 
 const CreatePost = () => {
   const [picker, setPicker] = useState(false);
@@ -12,8 +14,38 @@ const CreatePost = () => {
   const textAreaRef = useRef(null);
   const [charCount, setCharCount] = useState(0);
   const [maxChars] = useState(280);
-  const[success, setSuccess] = useState(false);
 
+
+
+  const queryClient = useQueryClient();
+  const {data:authUser} = useQuery({queryKey:["authUser"], queryFn:["authUser"]});
+ 
+  const {mutate:createPost, isPending, isError, error} = useMutation({
+    mutationFn: async ({text, img})=>{
+      try{
+       const res = await fetch("/api/posts/create",{
+        method: "POST",
+        headers:{
+         "Content-Type" : "application/json"
+        },
+        body: JSON.stringify({text, img})
+       });
+       const data = await res.json();
+       console.log(data);
+       if (!res.ok)  throw new Error (data.error || "Something went wrong.");
+       return data;
+      }catch(error){
+        console.error(error);
+        throw new Error(error);
+      }
+    },
+     onSuccess: () => {
+      setText("");
+      setImage("");
+      toast.success("Post created succesfully!");
+      queryClient.invalidateQueries({ queryKey: ["posts"] });
+    },
+  })
   useEffect(()=>{
    setCharCount(text.length);
   },[text])
@@ -47,9 +79,8 @@ const CreatePost = () => {
   const handleImageChange = (e) => {
     const file = e.target.files[0];
     if (file) {
-      setImage(file);
       const reader = new FileReader();
-      reader.onloadend = () => {
+      reader.onload = () => {
         setImage(reader.result);
       };
       reader.readAsDataURL(file);
@@ -57,27 +88,18 @@ const CreatePost = () => {
   };
   const handleSubmit = (e)=>{
     e.preventDefault();
-    setSuccess(true); 
+    createPost({text, img: image});
   }
-  useEffect(()=>{
-    if(success){
-     const timer =  setTimeout(()=>{
-        setSuccess(false);
-      },2000)
-       return()=>{
-      clearTimeout(timer);
-    }
-    } 
-    },[success])
+  
   return (
     <div className="p-8 border-b border-primary">
       <div className="flex p-5 gap-3">
         <div className="flex-shrink-0">
           <img
-            src={"/avatars/boy1.png"}
+            src={authUser.profileImg || "/avatar-placeholder.png"}
             loading="lazy"
             alt="avatar"
-            className="w-10 h-10"
+            className="w-10 h-10 rounded-full"
           />
         </div>
         <form className="w-full" onSubmit={handleSubmit}>
@@ -141,14 +163,9 @@ const CreatePost = () => {
               </button>
             )}
           </div>
+          {isError && <p className="text-red-500">{error.message}</p>}
         </form>
       </div>
-      {success && (<div role="alert" className="alert bg-primary text-secondary">
-  <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6 shrink-0 stroke-current" fill="none" viewBox="0 0 24 24">
-    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
-  </svg>
-  <span>Post created successfully!</span>
-</div>)}
     </div>
   );
 };

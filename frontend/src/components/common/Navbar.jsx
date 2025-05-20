@@ -38,18 +38,7 @@ const Navbar = () => {
   
   });
 
-  const {data: authUser} = useQuery({ queryKey:["authUser"],
-  queryFn: async ()=>{
-    try{
-      const res = await fetch("/api/auth/me");
-      const data = await res.json();
-      if(!res.ok) throw new Error(data.message || "Something went wrong");
-      return data;
-    }catch(error){
-      console.error(error);
-      throw error;
-    }     
-  }});
+  const {data: authUser} = useQuery({ queryKey:["authUser"], queryFn:["authUser"]  });
   const handleLogout = ()=>{
     logout();
     

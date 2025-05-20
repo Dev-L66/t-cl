@@ -15,7 +15,7 @@ const HomePage = () => {
         </div>
         <div className="min-h-screen">
         <CreatePost/>
-         <Posts/>
+         <Posts feedType={feedType}/>
     </div>
      
        </div>

@@ -6,16 +6,44 @@ import { FaHeart } from "react-icons/fa";
 import { CiHeart } from "react-icons/ci";
 import { FaRetweet } from "react-icons/fa";
 import { FaBookmark } from "react-icons/fa";
-
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import { toast } from "react-hot-toast";
+import LoadingSpinner from "../common/LoadingSpinner";
 const Post = ({ post }) => {
+  const {data: authUser} = useQuery({queryKey:["authUser"], queryFn:['authUser']});
   const [comment, setcomment] = useState("");
   const postOwner = post.user;
   const [isLiked, setLiked] = useState(false);
-  const [isMyPost, setIsMyPost] = useState(true);
+  const isMyPost = authUser._id === post.user._id;
   const formattedDate = "1h";
-  const isCommenting = false;
+  
+  const queryClient = useQueryClient();
+  const {mutate:deletePost, isPending} = useMutation({
+    mutationFn: async() =>{
+      try{
+        const res = await fetch (`/api/posts/${post._id}`,{
+          method:"DELETE"
+        });
+        const data = res.json();
+        if(!res.ok) throw new Error(data.message || "Something went wrong.");
+        return data;
+      }catch(error){
+        console.error(error);
+        throw new Error(error);
+      }
 
-  const handleDeletePost = () => {};
+    },
+    onSuccess:()=>{
+      toast.success("Post deleted successfully!");
+      queryClient.invalidateQueries({queryKey:["posts"]});
+
+    }
+  })
+   
+ 
+  const handleDeletePost = () => {
+    deletePost();
+  };
   const handlePostComment = (e) => {
     e.preventDefault();
   };
@@ -23,7 +51,7 @@ const Post = ({ post }) => {
   const handleLikedPost = () => {
     setLiked(!isLiked);
   };
-
+ 
   return (
     <>
       <div className="flex items-center py-3 px-5">
@@ -42,10 +70,11 @@ const Post = ({ post }) => {
               <span className="text-secondary text-xs">{formattedDate}</span>
               {isMyPost && (
                 <span className="flex justify-end flex-1">
-                  <FaTrash
+                 {!isPending && <FaTrash
                     className="text-primary cursor-pointer hover:text-red-500 justify-end"
                     onClick={handleDeletePost}
-                  />
+                  />}
+                  {isPending && <LoadingSpinner/>}
                 </span>
               )}
             </div>
@@ -61,11 +90,11 @@ const Post = ({ post }) => {
         <p className="p-2 text-md text-secondary">{post.text}</p>
         {post.img && (
           <div>
-            <figure className="p-2  flex justify-center items-center rounded-xl w-full h-fit">
+            <figure className="p-2 flex justify-center items-center rounded-xl w-full h-fit">
               <img
                 src={post.img}
                 alt="postImg"
-                className="h-80 p-2 object-contain rounded-lg border border-primary"
+                className=" w-max-70 h-max-70 p-2 object-contain rounded-xl border border-primary"
                 loading="lazy"
               />
             </figure>
@@ -132,9 +161,9 @@ const Post = ({ post }) => {
                <button
                   className="btn btn-primary rounded-2xl"
                   type="submit"
-                  disabled={isCommenting}
+                  disabled={isPending}
                 >
-                 {isCommenting ? "Posting..." : "Post"}
+                 {isPending ? "Posting..." : "Post"}
                 </button>
                 <button className="btn btn-danger rounded-2xl" onClick={() => document.getElementById(`my_modal_5${post._id}`).close()}>Close</button>
               </div>
