@@ -129,6 +129,7 @@ const CreatePost = () => {
                     className="object-contain"
                     alt="previewImage"
                     style={{ maxWidth: "100%", maxHeight: "200px" }}
+                    loading="lazy"
                   />
                 </div>
               </>

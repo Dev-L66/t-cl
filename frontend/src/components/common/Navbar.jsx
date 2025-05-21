@@ -64,7 +64,7 @@ const Navbar = () => {
               <Logo height="100" width="100" />
             </div>
             <div className="text-xl text-secondary flex flex-col gap-5 items-center pb-10 w-full h-fit">
-              <NavLink to={`/profile/${authUser?.username}`}>
+              <NavLink to={`/`}>
                 <div className={`flex gap-2 items-center`}>
                   <FaHome className="text-xl" /> <p>Home</p>
                 </div>
@@ -85,6 +85,8 @@ const Navbar = () => {
                 <img
                   src={authUser?.profileImg || "/avatars/boy1.png"}
                   className="w-[40px] h-[40px] rounded-full"
+                  alt="profileImg"
+                  loading="lazy"
                 />
               </figure>
               <div className="flex flex-col">

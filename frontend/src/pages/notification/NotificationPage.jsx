@@ -70,6 +70,7 @@ const NotificationPage = () => {
                       src={notification.from.profileImg}
                       alt="ProfileImage"
                       className="h-10 w-10"
+                      loading="lazy"
                     />
                   </Link>
                 </div>

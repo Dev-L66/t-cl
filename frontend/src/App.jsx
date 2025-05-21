@@ -33,7 +33,7 @@ const App = () => {
   }  
   return (
     <>
-       <div className="grid md:grid-cols-[1fr_3fr_1fr] grid-cols-1">
+       <div className="grid grid-cols-1 md:grid-cols-[1fr_3fr_1fr]">
        {authUser && <div>
           <Navbar />
         </div> }
@@ -48,7 +48,7 @@ const App = () => {
           </Routes>
         </div>
 
-       {authUser && <div className="flex ">
+       {authUser && <div className="top-0 sticky flex justify-center items-center h-screen ">
           <RightPanel />
         </div>}
         <Toaster/>

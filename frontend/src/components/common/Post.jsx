@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Link } from "react-router";
 import { FaTrash } from "react-icons/fa";
 import { FaRegComment } from "react-icons/fa";
@@ -9,13 +9,22 @@ import { FaBookmark } from "react-icons/fa";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { toast } from "react-hot-toast";
 import LoadingSpinner from "../common/LoadingSpinner";
+import { formatDistanceToNow } from 'date-fns';
 const Post = ({ post }) => {
   const {data: authUser} = useQuery({queryKey:["authUser"], queryFn:['authUser']});
   const [comment, setcomment] = useState("");
   const postOwner = post.user;
   const [isLiked, setLiked] = useState(false);
   const isMyPost = authUser._id === post.user._id;
-  const formattedDate = "1h";
+  let date = formatDistanceToNow(new Date(post.createdAt).toLocaleString());  
+  const [formattedDate,setFormattedDate ]= useState(date);
+  useEffect (()=>{
+    const timer = setInterval(()=>{
+      setFormattedDate(date);
+      console.log(formattedDate)
+    },60000)
+     return () => clearInterval(timer);
+  },[formattedDate])
   
   const queryClient = useQueryClient();
   const {mutate:deletePost, isPending} = useMutation({
@@ -61,13 +70,16 @@ const Post = ({ post }) => {
               src={postOwner.profileImg || "/avatars/boy1.png"}
               alt="ProfileImage"
               className="h-10 w-10"
+              loading="lazy"
             />
           </Link>
           <div className="flex flex-col flex-1">
-            <div className="flex items-center gap-2">
+            <div className="flex flex-col">
               <p className="text-secondary text-sm">{postOwner.fullName}</p>
-              <p className="text-primary text-xs">@{postOwner.username}</p>
-              <span className="text-secondary text-xs">{formattedDate}</span>
+              <p className="text-primary text-xs font-bold">@{postOwner.username}</p>
+              <div>
+              <span className="text-gray-700 text-xs">{date} ago</span>
+              </div>
               {isMyPost && (
                 <span className="flex justify-end flex-1">
                  {!isPending && <FaTrash
@@ -135,6 +147,7 @@ const Post = ({ post }) => {
                                 }
                                 alt="ProfileImage"
                                 className="h-8 w-8 rounded-full"
+                                loading="lazy"
                               />
                               <div>
                                 <p className="text-xs mb-2">

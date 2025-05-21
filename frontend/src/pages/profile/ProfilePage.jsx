@@ -7,6 +7,7 @@ import EditProfileModal from "./EditProfileModal";
 import { Link } from "react-router";
 import Posts from "../../components/common/Posts";
 import ProfileHeaderSkeleton from "../../components/skeletons/ProfileHeaderSkeleton";
+import useFollow from "../../hooks/useFollow";
 
 const ProfilePage = () => {
   const coverImgRef = useRef(null);
@@ -27,6 +28,8 @@ const ProfilePage = () => {
       reader.readAsDataURL(file);
     }
   };
+
+  const {followUnfollow, isPending} = useFollow();  
   const user = {
     _id: "1",
     fullName: "John Doe",
@@ -59,7 +62,8 @@ const ProfilePage = () => {
         accept="image/*"
           className="w-full object-cover h-80 border-b border-opacity-50  border-primary"
           src={coverImg || user?.coverImg || "/cover.png"}
-          alt="Cover"
+          alt="CoverImg"
+          loading="lazy"
         />
 
         <div className="absolute top-3 right-2 rounded-full bg-primary p-2">
@@ -81,7 +85,8 @@ const ProfilePage = () => {
           <img
             className="h-24 w-24 rounded-full object-cover"
             src={profileImg || user?.profileImg || "/avatars/boy1.png"}
-            alt="Profile"
+            alt="ProfileImg"
+            loading="lazy"
           />
 
           <div className="absolute bottom-0 right-0 rounded-full bg-primary p-1">
@@ -108,7 +113,7 @@ const ProfilePage = () => {
           <Link className="text-primary text-sm font-bold" to={user?.link}>
             {user?.link}
           </Link>
-          {!isMyProfile && (<div className="flex flex-1 justify-end"><button className="btn btn-primary rounded-full ">follow</button></div>)}
+          {!isMyProfile && (<div className="flex flex-1 justify-end"><button className="btn btn-primary rounded-full " onClick={()=>followUnfollow(user?._id)}>follow</button></div>)}
           {isMyProfile && (<div className="flex flex-1 justify-end">
             <EditProfileModal />
           </div>)}
