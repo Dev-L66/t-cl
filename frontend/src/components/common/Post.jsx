@@ -10,24 +10,46 @@ import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { toast } from "react-hot-toast";
 import LoadingSpinner from "../common/LoadingSpinner";
 import { formatDistanceToNow } from 'date-fns';
+import { formatPostDate } from "../../utils";
 const Post = ({ post }) => {
   const {data: authUser} = useQuery({queryKey:["authUser"], queryFn:['authUser']});
-  const [comment, setcomment] = useState("");
+  const [comment, setComment] = useState("");
   const postOwner = post.user;
-  const [isLiked, setLiked] = useState(false);
+  const isLiked = post.likes.includes(authUser._id.toString());
   const isMyPost = authUser._id === post.user._id;
-  let date = formatDistanceToNow(new Date(post.createdAt).toLocaleString());  
-  const [formattedDate,setFormattedDate ]= useState(date);
-  useEffect (()=>{
-    const timer = setInterval(()=>{
-      setFormattedDate(date);
-      console.log(formattedDate)
-    },60000)
-     return () => clearInterval(timer);
-  },[formattedDate])
-  
-  const queryClient = useQueryClient();
-  const {mutate:deletePost, isPending} = useMutation({
+  let date = formatPostDate(post.createdAt);  
+const queryClient = useQueryClient();
+
+  const {mutate:likePost, isPending:isLiking} = useMutation({
+    mutationFn:async()=>{
+      try{
+        const res = await fetch(`/api/posts/like/${post._id}`,{
+          method: "POST"
+        });
+        const data = await res.json();
+        if(!res.ok) throw new Error (data.message || "Something went wrong.");
+        return data;
+      }catch(error){
+        console.error(error);
+        throw new Error(error);
+      }
+    },
+    onSuccess:(updatedLikes)=>{
+      queryClient.setQueryData(["posts"], (oldData) => {
+        return oldData.map((p) => {
+          if (p._id.toString() === post._id.toString()) {
+            return { ...p, likes: updatedLikes };
+          }
+          return p;
+        });
+      })
+      
+      
+    }
+  })
+
+   
+  const {mutate:deletePost, isPending:isDeleting} = useMutation({
     mutationFn: async() =>{
       try{
         const res = await fetch (`/api/posts/${post._id}`,{
@@ -45,20 +67,81 @@ const Post = ({ post }) => {
     onSuccess:()=>{
       toast.success("Post deleted successfully!");
       queryClient.invalidateQueries({queryKey:["posts"]});
+      
 
     }
   })
+
+  const {mutate: commentPost, isPending:isCommenting} = useMutation({
+    mutationFn: async ()=>{
+      try{
+        const res = await fetch (`/api/posts/comment/${post._id}`,{
+          method: "POST",
+          headers:{
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({text: comment})
+        })
+        const data = await res.json();
+        if(!res.ok) throw new Error(data.message || "Something went wrong.");
+        return data;
+      }catch(error){
+        console.error(error);
+        throw new Error(error);
+      }
+    },
+    onSuccess:()=>{
+      toast.success("Comment added successfully!");
+      setComment("");
+      queryClient.invalidateQueries({queryKey:["posts"]});
+  
+    },
+    onError:(error)=>{
+      toast.error(error.message);
+    }
+  })
    
+  const {mutate: deleteComment, isPending: isDeletingComment} = useMutation({
+    mutationFn: async(commentId)=>{
+      try {
+        const res = await fetch(`/api/posts/${post._id}/comment/${commentId}`,{
+          method: "DELETE"
+        });
+        const data = await res.json();
+        console.log(data);
+        if(!res.ok) throw new Error(data.message || "Something went wrong.");
+        return data;
+      }catch(error){
+        console.error(error);
+        throw new Error(error);
+      }
+    },
+    onSuccess:()=>{
+      toast.success("Comment deleted successfully!");
+      queryClient.invalidateQueries({queryKey:["posts"]});
+    }
+  })
+
+  
+ 
  
   const handleDeletePost = () => {
     deletePost();
   };
   const handlePostComment = (e) => {
     e.preventDefault();
+    if (isCommenting) return;
+    commentPost();
+  };
+
+  const handleDeleteComment = (commentId) => {
+    if(isDeletingComment) return;
+    deleteComment(commentId);
   };
 
   const handleLikedPost = () => {
-    setLiked(!isLiked);
+    if(isLiking) return;
+    likePost();
   };
  
   return (
@@ -82,11 +165,11 @@ const Post = ({ post }) => {
               </div>
               {isMyPost && (
                 <span className="flex justify-end flex-1">
-                 {!isPending && <FaTrash
+                 {!isDeleting && <FaTrash
                     className="text-primary cursor-pointer hover:text-red-500 justify-end"
                     onClick={handleDeletePost}
                   />}
-                  {isPending && <LoadingSpinner/>}
+                  {isDeleting && <LoadingSpinner/>}
                 </span>
               )}
             </div>
@@ -156,7 +239,10 @@ const Post = ({ post }) => {
                                     @{postOwner.username}
                                   </span>
                                 </p>
+                                <div className="flex gap-2 justify-between items-center">
                                 <p className="mb-2">{comment.text}</p>
+                                <FaTrash className="cursor-pointer text-xs text-primary"  onClick={() => handleDeleteComment(comment._id)}/>
+                              </div>
                               </div>
                             </figure>
                           </div>
@@ -167,16 +253,16 @@ const Post = ({ post }) => {
                   className="p-3 w-full focus:outline-0 resize-none  rounded text-sm text-secondary h-20"
                   placeholder="Add a comment..."
                   value={comment}
-                  onChange={(e) => setcomment(e.target.value)}
+                  onChange={(e) => setComment(e.target.value)}
                 />
               </div>
               <div className="flex justify-end gap-2">
                <button
                   className="btn btn-primary rounded-2xl"
                   type="submit"
-                  disabled={isPending}
+                  
                 >
-                 {isPending ? "Posting..." : "Post"}
+                 Post
                 </button>
                 <button className="btn btn-danger rounded-2xl" onClick={() => document.getElementById(`my_modal_5${post._id}`).close()}>Close</button>
               </div>
@@ -186,11 +272,12 @@ const Post = ({ post }) => {
         </dialog>
         <FaRetweet />
           <span className="flex items-center gap-1">
-          {isLiked ? (
+            {isLiking && <LoadingSpinner/>}
+          {isLiked && !isLiking && (
             <FaHeart className="text-red-500" onClick={handleLikedPost} />
-          ) : (
-            <CiHeart className="text-xl font-bold " onClick={handleLikedPost} />
-          )}
+)}
+            {!isLiked && !isLiking && (<CiHeart className="text-xl font-bold " onClick={handleLikedPost} />)}
+          
           {post.likes.length}
         </span>
 

@@ -25,7 +25,7 @@ export const getAllPosts = async (req, res) => {
 //create post
 export const createPost = async (req, res) => {
   try {
-    const { text} = req.body;
+    const { text } = req.body;
     let { img } = req.body;
     const userId = req.user._id;
 
@@ -38,12 +38,11 @@ export const createPost = async (req, res) => {
       return res.status(400).json({ error: "Post must have text or image" });
     }
 
-    
     if (img) {
       const uploadedResponse = await cloudinary.uploader.upload(img);
       img = uploadedResponse.secure_url;
     }
-  
+
     const newPost = await Post.create({
       user: userId,
       text,
@@ -153,28 +152,31 @@ export const likeUnlikePost = async (req, res) => {
       return res.status(404).json({ error: "Post not found." });
     }
 
-    const likedPost = post.likes.includes(userId);
+    const userLikedPost = post.likes.includes(userId);
 
-    if (likedPost) {
+    if (userLikedPost) {
       //unlike post
 
-      await Post.findByIdAndUpdate(postId, { $pull: { likes: userId } });
-      await User.findByIdAndUpdate(userId, { $pull: { likedPosts: postId } });
-      return res.status(200).json({ message: "Post unliked successfully." });
+      await Post.updateOne({ _id: postId }, { $pull: { likes: userId } });
+      await User.updateOne({ _id: userId }, { $pull: { likedPosts: postId } });
+      const updatedLikes = post.likes.filter(
+        (id) => id.toString() !== userId.toString()
+      );
+      return res.status(200).json(updatedLikes);
     } else {
       //like post
-      await Post.findByIdAndUpdate(postId, { $push: { likes: userId } });
-      await User.findByIdAndUpdate(userId, { $push: { likedPosts: postId } });
+      post.likes.push(userId);
+      await User.updateOne({ _id: userId }, { $push: { likedPosts: postId } });
+      await post.save();
 
       const notification = await Notification.create({
         from: userId,
         to: post.user,
         type: "like",
       });
+      const updatedLikes = post.likes;
 
-      return res
-        .status(200)
-        .json({ message: "Post liked successfully.", notification });
+      return res.status(200).json(updatedLikes);
     }
   } catch (error) {
     console.log(`Error in likeUnikePost controller: ${error.message}`);
@@ -240,3 +242,29 @@ export const deletePost = async (req, res) => {
     return res.status(500).json({ error: error.message });
   }
 };
+
+export const deleteComment = async (req, res) => {
+  const { postId, commentId } = req.params;
+  const userId = req.user._id;
+
+  const post = await Post.findById(postId);
+  if (!post) return res.status(404).json({ error: "Post not found." });
+
+  const comment = post.comments.find(
+    (comment) => comment._id.toString() === commentId.toString()
+  );
+  if (!comment) return res.status(404).json({ error: "Comment not found." });
+
+  if (comment.user.toString() !== userId.toString())
+    return res
+      .status(400)
+      .json({ error: "You are not authorized to delete this comment." });
+
+  post.comments = post.comments.filter(
+    (comment) => comment._id.toString() !== commentId
+  );
+  await post.save();
+  return res.status(200).json({ message: "Comment deleted successfully." });
+};
+
+
