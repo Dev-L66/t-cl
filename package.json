@@ -1,12 +1,12 @@
 {
   "name": "t-clone",
   "version": "1.0.0",
-  "main": "/backend/server.js",
-  "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
-    "dev": "nodemon index.js",
-    "start": "node index.js"
-  },
+  "main": "backend/server.js",
+ "scripts": {
+		"dev": "nodemon backend/server.js",
+		"start": "node backend/server.js",
+		"build": "npm install && npm install --prefix frontend && npm run build --prefix frontend"
+	},
   "keywords": [],
   "author": "",
   "license": "ISC",
@@ -26,6 +26,7 @@
     "zod": "^3.25.28"
   },
   "devDependencies": {
+    "cross-env": "^7.0.3",
     "nodemon": "^3.1.10"
   }
 }
