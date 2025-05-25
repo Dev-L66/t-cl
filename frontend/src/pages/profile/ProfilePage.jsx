@@ -1,5 +1,5 @@
-import { use, useEffect, useRef, useState } from "react";
-import { POSTS } from "../../utils/db/dummy";
+import {  useEffect, useRef, useState } from "react";
+
 import { IoMdArrowRoundBack } from "react-icons/io";
 import { MdEdit } from "react-icons/md";
 import { FaLink } from "react-icons/fa";
@@ -8,7 +8,7 @@ import { Link, useParams } from "react-router";
 import Posts from "../../components/common/Posts";
 import ProfileHeaderSkeleton from "../../components/skeletons/ProfileHeaderSkeleton";
 import useFollow from "../../hooks/useFollow";
-import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import {  useQuery, useQueryClient } from "@tanstack/react-query";
 import { FaCalendarAlt } from "react-icons/fa";
 import LoadingSpinner from "../../components/common/LoadingSpinner";
 import useUpdateProfile from "../../hooks/useUpdateProfile";
@@ -21,11 +21,12 @@ const ProfilePage = () => {
   const [feedType, setFeedType] = useState("posts");
 
   const { username } = useParams();
-  const queryClient = useQueryClient();
-  const { data: authUser } = useQuery({
+  
+  const { data:authUser } = useQuery({
     queryKey: ["authUser"],
-    queryFn: ["authUser"],
+   
   });
+  
   const { followUnfollow, isPending } = useFollow();
   const {
     data: userProfile,
@@ -38,7 +39,7 @@ const ProfilePage = () => {
       try {
         const res = await fetch(`/api/users/profile/${username}`);
         const data = await res.json();
-        console.log(data);
+       
         if (!res.ok) throw new Error(data.message || "Something went wrong.");
         return data;
       } catch (error) {
@@ -48,7 +49,7 @@ const ProfilePage = () => {
     },
   });
 
-  const {mutate:updateProfile, isPending:isUpdatingProfile} = useUpdateProfile();
+  const {updateProfile, isUpdatingProfile} = useUpdateProfile();
 
   const { data: posts, isLoading: isPostsLoading } = useQuery({
     queryKey: ["posts"],
@@ -175,7 +176,7 @@ const ProfilePage = () => {
               </div>
               {isMyProfile && (
                 <div className="flex flex-1 justify-end">
-                  <EditProfileModal />
+                  <EditProfileModal authUser={authUser} />
                 </div>
               )}
               {!isMyProfile && (

@@ -4,52 +4,56 @@ import { CiLogout } from "react-icons/ci";
 import { IoIosMenu } from "react-icons/io";
 import { NavLink } from "react-router";
 import { useMutation, useQueryClient, useQuery } from "@tanstack/react-query";
-import toast from "react-hot-toast";
+import { toast } from "react-hot-toast";
 
 const Navbar = () => {
-  
+  const { data: authUser } = useQuery({
+    queryKey: ["authUser"],
+  });
   const queryClient = useQueryClient();
-  
-  const {mutate:logout} = useMutation({
-  mutationFn: async ()=>{
-  try{
-    const res = await fetch("/api/auth/logout",{
-      method: "POST"
-    });
 
-    const data = await res.json();
-    if(!res.ok) throw new Error (data.message || "Something went wrong");
-    console.log(data);
-    return data;
+  const { mutate: logout } = useMutation({
+    mutationFn: async () => {
+      try {
+        const res = await fetch("/api/auth/logout", {
+          method: "POST",
+        });
 
-  }catch(error){
-     console.error(error);
-     throw error;
-  }
-  },
-  onSuccess:()=>{
-    toast.success("Logged out successfully!");
-    queryClient.setQueryData(["authUser"], null);
-  },
-  onError:(data)=>{
-    toast.error(data.message || "Something went wrong");
-  }
+        const data = await res.json();
+        if (!res.ok) throw new Error(data.error || "Something went wrong");
 
-  
+        return data;
+      } catch (error) {
+        console.error(error);
+        throw error;
+      }
+    },
+
+    onSuccess: async () => {
+       toast.success("Logged out successfully!");
+      await Promise.all([
+        queryClient.resetQueries({ queryKey: ["authUser"] }),
+        queryClient.invalidateQueries({ queryKey: ["authUser"] }),
+        
+      ]);
+     
+    },
+
+    onError: (data) => {
+      toast.error(data.error || "Something went wrong");
+    },
   });
 
-  const {data: authUser} = useQuery({ queryKey:["authUser"], queryFn:["authUser"]  });
-  const handleLogout = ()=>{
-    logout();
-    
-  }
   return (
     <>
-      <div className="drawer sticky top-0 z-100">
+      <div className="drawer sticky top-0 z-100 ">
         <input id="my-drawer" type="checkbox" className="drawer-toggle" />
-        <div className="drawer-content">
-          <label htmlFor="my-drawer" className="btn bg-black border-0 drawer-button">
-            <IoIosMenu className="text-3xl text-primary" /> 
+        <div className="drawer-content  ">
+          <label
+            htmlFor="my-drawer"
+            className="btn bg-black border-0 drawer-button"
+          >
+            <IoIosMenu className="text-3xl text-primary" />
           </label>
         </div>
         <div className="drawer-side">
@@ -57,10 +61,11 @@ const Navbar = () => {
             htmlFor="my-drawer"
             aria-label="close sidebar"
             className="drawer-overlay"
-          ></label>
+            >
+          </label>
 
-          <ul className="menu flex flex-col items-center  min-h-full w-40 ">
-            <div className={`flex justify-start p-5`}>
+          <ul className="menu flex flex-col items-center min-h-full w-40 bg-primary/90 ">
+            <div className="flex justify-start p-5">
               <Logo height="100" width="100" />
             </div>
             <div className="text-xl text-secondary flex flex-col gap-5 items-center pb-10 w-full h-fit">
@@ -80,28 +85,40 @@ const Navbar = () => {
                 </div>
               </NavLink>
             </div>
-            <div className="flex gap-2 mb-2 absolute bottom-15 rounded-full bg-[#3a0738] p-2">
-              <figure>
-                <img
-                  src={authUser?.profileImg || "/avatars/boy1.png"}
-                  className="w-[40px] h-[40px] rounded-full"
-                  alt="profileImg"
-                  loading="lazy"
-                />
-              </figure>
-              <div className="flex flex-col">
-                <p className="text-xs">{authUser?.fullName}</p>
-                <div className="flex gap-2">
-                  <p className="text-xs text-gray-500">@{authUser?.username}</p>
+            {authUser && (
+              <>
+                <div className="flex gap-2 mb-2 absolute bottom-15 rounded-full bg-primary w-fit p-2">
+                  <figure>
+                    <img
+                      src={authUser?.profileImg || "/avatars/boy1.png"}
+                      className="w-[40px] h-[40px] rounded-full"
+                      alt="profileImg"
+                      loading="lazy"
+                    />
+                  </figure>
+                  <div className="flex flex-col">
+                    <p className="text-xs">{authUser?.fullName}</p>
+                    <div className="flex gap-2">
+                      <p className="text-xs text-gray-500">
+                        @{authUser?.username}
+                      </p>
+                    </div>
+                  </div>
                 </div>
-              </div>
-            </div>
-            <div onClick={handleLogout} className="cursor-pointer flex justify-center items-center gap-2 mt-5 absolute bottom-5 " >
-              Logout{" "}
-              <span>
-                <CiLogout className="font-bold text-2xl"  />
-              </span>
-            </div>
+                <div
+                  onClick={(e) => {
+                    e.preventDefault();
+                    logout();
+                  }}
+                  className="text-secondary cursor-pointer flex justify-center items-center gap-2 mt-5 absolute bottom-5 "
+                >
+                  Logout{" "}
+                  <span>
+                    <CiLogout className="font-bold text-2xl" />
+                  </span>
+                </div>
+              </>
+            )}
           </ul>
         </div>
       </div>

@@ -17,7 +17,8 @@ const App = () => {
       try{
         const res = await fetch("/api/auth/me");
         const data = await res.json();
-        if(!res.ok) throw new Error(data.message || "Something went wrong.");
+        if(!res.ok) throw new Error(data.error || "Something went wrong.");
+         console.log("authUser is here:", data);
         return data;
       }catch(error){
        console.error(error);
@@ -30,7 +31,8 @@ const App = () => {
     return (
       <div className="h-screen flex justify-center items-center"><LoadingSpinner/></div>
     )
-  }  
+  }
+  if(isError) console.log(error.message);  
   return (
     <>
        <div className="grid grid-cols-1 md:grid-cols-[1fr_3fr_1fr]">
@@ -44,7 +46,7 @@ const App = () => {
             <Route path="/login" element={!authUser ? <LoginPage /> : <Navigate to='/'/>} />
             <Route path="/signup" element={!authUser ? <SignupPage />  : <Navigate to='/'/>} />
             <Route path="/notifications" element={authUser ? <NotificationPage /> : <Navigate to='/login'/>} />
-            <Route path="/profile/:username" element={authUser ? <ProfilePage /> : <ProfilePage />} />
+            <Route path="/profile/:username" element={authUser ? <ProfilePage /> : <Navigate to='/login'/>} />
           </Routes>
         </div>
 

@@ -5,22 +5,22 @@ import App from './App.jsx'
 import { BrowserRouter } from "react-router";
 import {QueryClient, QueryClientProvider} from "@tanstack/react-query";
 
+
+const defaultQueryFn = async ({ queryKey }) => {
+  const endpoint = queryKey[0];
+  const res = await fetch(endpoint);
+  const data = await res.json();
+  if (!res.ok) throw new Error("Network response was not ok");
+  return res.json();
+};
+
 const queryClient = new QueryClient({
   defaultOptions:{
     queries:{
       refetchOnWindowFocus: false,
-       queryFn: async({queryKey})=>{
-        try{
-          const res = await fetch(queryKey[0]);
-          const data = await res.json();
-          if(!res.ok) throw new Error(data.message || "Something went wrong.");
-          return data;
-          
-        }catch(error){
-          console.error(error);
-          throw error;
-        }
-      }
+      staleTime: 1000 * 60 * 5,
+      cacheTime: 1000 * 60 * 15, 
+       queryFn: defaultQueryFn,
     }
   }
 });

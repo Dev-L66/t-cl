@@ -93,7 +93,7 @@ const CreatePost = () => {
   
   return (
     <div className="p-8 border-b border-primary">
-      <div className="flex p-5 gap-3">
+      <div className="flex justify-center p-4 gap-3">
         <div className="flex-shrink-0">
           <img
             src={authUser.profileImg || "/avatar-placeholder.png"}
