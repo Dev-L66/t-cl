@@ -4,8 +4,9 @@ import { useQuery } from '@tanstack/react-query';
 import { useEffect } from 'react';
 
 
-const Posts = ({feedType}) => {
-  // const[isLoading, setLoading] = useState(false);
+
+const Posts = ({feedType, username, userId}) => {
+ 
   const getPostEndpoint = ()=>{
     if(feedType === "forYou"){
       return "/api/posts/all";
@@ -13,7 +14,13 @@ const Posts = ({feedType}) => {
     if(feedType === "following"){
       return "/api/posts/following";
     }
-    if(feedType === " "){
+    if(feedType === "posts"){
+      return `/api/posts/user/${username}`;
+    }
+    if(feedType === "likes"){
+      return `/api/posts/likes/${userId}`;
+    }
+    if(feedType === ""){
       return "/api/posts/all";
     }
   }
@@ -30,6 +37,7 @@ const Posts = ({feedType}) => {
           }
         });
         const data = await res.json();
+        
         if(!res.ok) throw new Error(data.message || "Something went wrong.");
         return data;
       }catch(error){

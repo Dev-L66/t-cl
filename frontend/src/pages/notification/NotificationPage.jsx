@@ -1,33 +1,79 @@
-import { useState } from "react";
 import LoadingSpinner from "../../components/common/LoadingSpinner";
 import { CiSettings } from "react-icons/ci";
-import { FaUser, FaHeart } from "react-icons/fa";
+import { FaUser, FaHeart, FaTrash } from "react-icons/fa";
 import { Link } from "react-router";
+import toast from "react-hot-toast";
+import { QueryClient, useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 const NotificationPage = () => {
-  const [isLoading, setIsLoading] = useState(false);
-  const notifications = [
-    {
-      _id: "1",
-      from: {
-        _id: "1",
-        username: "johndoe",
-        profileImg: "/avatars/boy2.png",
-      },
-      type: "follow",
+const queryClient = useQueryClient();
+  const {data: notifications, isLoading: notificationsLoading} = useQuery({
+    queryKey: ["notifications"],
+    queryFn: async()=>{
+      try{
+        const res = await fetch("/api/notifications");
+        const data = await res.json();
+        if(!res.ok) throw new Error(data.message || "Something went wrong.");
+        return data;
+      }catch(error){
+        console.error(error);
+        throw new Error(error);
+      }
     },
-    {
-      _id: "2",
-      from: {
-        _id: "2",
-        username: "janedoe",
-        profileImg: "/avatars/girl1.png",
-      },
-      type: "like",
+  });
+  const {mutate:deleteNotifications, isPending:isDeleting} = useMutation({
+    mutationFn: async ()=>{
+      try{
+        const res = await fetch(`/api/notifications`,{
+          method:"DELETE"
+        });
+        const data = await res.json();
+        if(!res.ok) throw new Error(data.message || "Something went wrong.");
+        return data;
+      } catch (error){
+        console.log(error);
+        throw new Error(error)
+      }
     },
-  ];
+    onSuccess:()=>{
+      toast.success("All notifications deleted");
+      queryClient.invalidateQueries({queryKey:["notifications"]});
+    }
+  });
+
+  const {mutate: deleteNotificationId, isPending: isDeletingId} = useMutation({
+    mutationFn: async(notificationId)=>{
+      try{
+        const res = await fetch(`/api/notifications/${notificationId}`,{
+          method:"DELETE"
+        });
+        const data = await res.json();
+        if(!res.ok) throw new Error(data.message || "Something went wrong.");
+        return data;
+      }catch(error){
+        console.error(error);
+        throw new Error(error);
+      }
+    },
+    onSuccess:()=>{
+      toast.success("Notification deleted");
+      queryClient.invalidateQueries({queryKey:["notifications"]});
+    },
+    onError:(error)=>{
+      toast.error(error.message);
+    }
+  })
+
+
   const handleDeleteNotications = () => {
+    deleteNotifications();
     alert("All notifications deleted");
   };
+  const deleteNotification = (notificationId)=>{
+    if(isDeletingId) return;
+    deleteNotificationId(notificationId);
+    
+  }
+
   return (
     <>
       <div className="border-r border-l border-primary text-secondary min-h-screen">
@@ -49,7 +95,7 @@ const NotificationPage = () => {
             </ul>
           </div>
         </div>
-        {isLoading && (
+        {notificationsLoading && (
           <div className="flex text-3xl flex-col justify-center h-screen items-center">
             Loading...
             <span>
@@ -57,25 +103,25 @@ const NotificationPage = () => {
             </span>
           </div>
         )}
-        {notifications.length === 0 && <p>No notifications found.</p>}
-        {!isLoading &&
+        {!notifications && (<p>No notifications found.</p>)}
+        {!notificationsLoading &&
           notifications?.map((notification) => (
             <div key={notification._id}>
               <div className="gap-2 border-b border-primary p-8 font-bold text-2xl">
                 <div className="flex gap-2 items-center">
                   {notification.type === "follow" && <FaUser color="purple" />}
                   {notification.type === "like" && <FaHeart color="red" />}
-                  <Link to={`/profile/${notification.from.username}`}>
+                  <Link to={`/profile/${notification?.from.username}` }>
                     <img
-                      src={notification.from.profileImg}
+                      src={notification?.from.profileImg || "/avatar-placeholder.png"}
                       alt="ProfileImage"
-                      className="h-10 w-10"
+                      className="h-10 w-10 rounded-full"
                       loading="lazy"
                     />
                   </Link>
                 </div>
-                <div>
-                  <h1>
+                <div className="flex justify-between">
+                  <h1 className="text-xl p-2">
                     <Link
                       to={`/profile/${notification.from.username}`}
                       className="text-primary"
@@ -86,6 +132,7 @@ const NotificationPage = () => {
                       ? "followed you."
                       : "liked your post."}
                   </h1>
+                  <FaTrash  onClick={()=>{deleteNotification(notification._id)}} className="cursor-pointer text-primary text-sm"/>
                 </div>
               </div>
             </div>
