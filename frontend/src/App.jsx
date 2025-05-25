@@ -46,7 +46,7 @@ const App = () => {
             <Route path="/signup" element={!authUser ? <SignupPage />  : <Navigate to='/'/>} />
             <Route path="/notifications" element={authUser ? <NotificationPage /> : <Navigate to='/login'/>} />
             <Route path="/profile/:username" element={authUser ? <ProfilePage /> : <Navigate to='/login'/>} />
-            <Route path="/404" element={<div>404</div>} />
+            <Route path="*" element={<div className="h-screen flex justify-center items-center text-5xl text-primary">404 Page not Found</div>} />
           </Routes>
         </div>
 
