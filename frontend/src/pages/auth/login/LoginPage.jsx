@@ -27,7 +27,6 @@ const SignupPage = () => {
 
         const data = await res.json();
         if (!res.ok) throw new Error(data.message || "Something went wrong");
-        console.log(data);
         return data;
       } catch (error) {
         console.error(error);
@@ -56,11 +55,11 @@ const SignupPage = () => {
   };
 
   return (
-    <div className="flex justify-around items-center w-[100%] container p-5">
-      <div className="hidden md:w-[50%] md:flex justify-center items-center h-screen p-3">
+    <div className="flex justify-between items-center   container p-5">
+      <div className="hidden md:w-[50%]   md:flex justify-center items-center h-screen p-3">
         <Logo width="500" height="700" />
       </div>
-      <div className="flex justify-center items-center w-full md:w-[50%] p-3">
+      <div className="flex justify-center items-center w-full md:w-[50%]  p-3">
         <div>
           <h1 className="text-6xl font-bold p-3 fontColor">Join today.</h1>
           <form onSubmit={handleFormSubmit}>
