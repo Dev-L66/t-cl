@@ -18,7 +18,7 @@ const Navbar = () => {
       try {
         const res = await fetch(`${API}/api/auth/logout`, {
           method: "POST",
-          credentials: "include",
+          // credentials: "include",
 
         });
 
