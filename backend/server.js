@@ -1,4 +1,4 @@
-import path from 'path';
+import cors from 'cors';
 import express from 'express';
 import authRoutes from './routes/auth.route.js';
 import userRoutes from './routes/user.route.js';
@@ -19,10 +19,12 @@ cloudinary.config({
 
 const app = express();
 const port = process.env.PORT || 4000;
-app.cors({
-    origin: process.env.CLIENT_URL,
-    credentials: true,
-});
+app.use(
+  cors({
+    origin: process.env.CLIENT_URL,    
+    credentials: true,     
+  })
+);
 app.use(express.json({ limit: '5mb' }));
 app.use(express.urlencoded({ extended: true }));
 app.use(cookieParser());
