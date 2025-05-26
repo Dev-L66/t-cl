@@ -11,7 +11,10 @@ const queryClient = useQueryClient();
     queryKey: ["notifications"],
     queryFn: async()=>{
       try{
-        const res = await fetch(`${API}/api/notifications`);
+        const res = await fetch(`${API}/api/notifications`,{
+          method:"GET",
+          credentials:"include"
+        });
         const data = await res.json();
         if(!res.ok) throw new Error(data.message || "Something went wrong.");
         return data;

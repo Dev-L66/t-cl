@@ -9,6 +9,7 @@ const useUpdateProfile = () => {
           try{
             const res = await fetch(`${API}/api/users/update`,{
               method:"POST",
+              credentials:"include",
               headers:{
                 "Content-Type": "application/json",
               },

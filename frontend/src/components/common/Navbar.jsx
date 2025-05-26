@@ -18,6 +18,7 @@ const Navbar = () => {
       try {
         const res = await fetch(`${API}/api/auth/logout`, {
           method: "POST",
+          
         });
 
         const data = await res.json();

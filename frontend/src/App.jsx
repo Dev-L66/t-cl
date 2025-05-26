@@ -16,7 +16,10 @@ const App = () => {
     queryKey:['authUser'],
     queryFn:async ()=>{
       try{
-        const res = await fetch(`${API}/api/auth/me`);
+        const res = await fetch(`${API}/api/auth/me`,{
+          method:"GET",
+          credentials:"include"
+        });
         const data = await res.json();
         if(!res.ok) throw new Error(data.error || "Something went wrong.");
         return data;

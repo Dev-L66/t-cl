@@ -34,7 +34,8 @@ const Posts = ({feedType, username, userId}) => {
         const res = await fetch(POST_ENDPOINT,{
           accept:{
             "Content-Type": "application/json",
-          }
+          },
+          credentials:"include"
         });
         const data = await res.json();
         

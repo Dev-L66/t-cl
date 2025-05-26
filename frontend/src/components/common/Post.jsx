@@ -25,7 +25,8 @@ const queryClient = useQueryClient();
     mutationFn:async()=>{
       try{
         const res = await fetch(`${API}/api/posts/likes/${post._id}`,{
-          method: "POST"
+          method: "POST",
+          credentials:"include"
         });
         const data = await res.json();
         if(!res.ok) throw new Error (data.message || "Something went wrong.");
@@ -54,7 +55,9 @@ const queryClient = useQueryClient();
     mutationFn: async() =>{
       try{
         const res = await fetch (`${API}/api/posts/${post._id}`,{
-          method:"DELETE"
+          method:"DELETE",
+          credentials:"include"
+
         });
         const data = res.json();
         if(!res.ok) throw new Error(data.message || "Something went wrong.");
@@ -78,6 +81,7 @@ const queryClient = useQueryClient();
       try{
         const res = await fetch (`${API}/api/posts/comment/${post._id}`,{
           method: "POST",
+          credentials:"include",
           headers:{
             "Content-Type": "application/json",
           },
@@ -106,7 +110,8 @@ const queryClient = useQueryClient();
     mutationFn: async(commentId)=>{
       try {
         const res = await fetch(`${API}/api/posts/${post._id}/comment/${commentId}`,{
-          method: "DELETE"
+          method: "DELETE",
+          credentials:"include"
         });
         const data = await res.json();
         
