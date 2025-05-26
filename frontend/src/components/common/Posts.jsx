@@ -2,6 +2,7 @@ import Post from './Post';
 import PostSkeleton from '../skeletons/PostSkeleton';
 import { useQuery } from '@tanstack/react-query';
 import { useEffect } from 'react';
+import { API } from '../../utils/index.js';
 
 
 
@@ -9,19 +10,19 @@ const Posts = ({feedType, username, userId}) => {
  
   const getPostEndpoint = ()=>{
     if(feedType === "forYou"){
-      return "/api/posts/all";
+      return `${API}/api/posts/all`;
     }
     if(feedType === "following"){
-      return "/api/posts/following";
+      return `${API}/api/posts/following`;
     }
     if(feedType === "posts"){
-      return `/api/posts/user/${username}`;
+      return `${API}/api/posts/user/${username}`;
     }
     if(feedType === "likes"){
-      return `/api/posts/likes/${userId}`;
+      return `${API}/api/posts/likes/${userId}`;
     }
     if(feedType === ""){
-      return "/api/posts/all";
+      return `${API}/api/posts/all`;
     }
   }
 
