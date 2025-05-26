@@ -4,13 +4,14 @@ import { FaUser, FaHeart, FaTrash } from "react-icons/fa";
 import { Link } from "react-router";
 import toast from "react-hot-toast";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import { API } from "../../apiClient.js";
 const NotificationPage = () => {
 const queryClient = useQueryClient();
   const {data: notifications, isLoading: notificationsLoading} = useQuery({
     queryKey: ["notifications"],
     queryFn: async()=>{
       try{
-        const res = await fetch("/api/notifications");
+        const res = await fetch(`${API}/api/notifications`);
         const data = await res.json();
         if(!res.ok) throw new Error(data.message || "Something went wrong.");
         return data;
@@ -23,7 +24,7 @@ const queryClient = useQueryClient();
   const {mutate:deleteNotifications, isPending:isDeleting} = useMutation({
     mutationFn: async ()=>{
       try{
-        const res = await fetch(`/api/notifications`,{
+        const res = await fetch(`${API}/api/notifications`,{
           method:"DELETE"
         });
         const data = await res.json();
@@ -43,7 +44,7 @@ const queryClient = useQueryClient();
   const {mutate: deleteNotificationId, isPending: isDeletingId} = useMutation({
     mutationFn: async(notificationId)=>{
       try{
-        const res = await fetch(`/api/notifications/${notificationId}`,{
+        const res = await fetch(`${API}/api/notifications/${notificationId}`,{
           method:"DELETE"
         });
         const data = await res.json();

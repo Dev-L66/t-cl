@@ -12,6 +12,7 @@ import {  useQuery, useQueryClient } from "@tanstack/react-query";
 import { FaCalendarAlt } from "react-icons/fa";
 import LoadingSpinner from "../../components/common/LoadingSpinner";
 import useUpdateProfile from "../../hooks/useUpdateProfile";
+import { API } from "../../apiClient.js";
 
 const ProfilePage = () => {
   const coverImgRef = useRef(null);
@@ -32,12 +33,12 @@ const ProfilePage = () => {
     data: userProfile,
     isLoading,
     refetch,
-    isRefetching,
+    
   } = useQuery({
     queryKey: ["getUserProfile"],
     queryFn: async () => {
       try {
-        const res = await fetch(`/api/users/profile/${username}`);
+        const res = await fetch(`${API}/api/users/profile/${username}`);
         const data = await res.json();
        
         if (!res.ok) throw new Error(data.message || "Something went wrong.");
@@ -55,7 +56,7 @@ const ProfilePage = () => {
     queryKey: ["posts"],
     queryFn: async () => {
       try {
-        const res = await fetch(`/api/posts/user/${username}`);
+        const res = await fetch(`${API}/api/posts/user/${username}`);
         const data = await res.json();
         if (!res.ok) throw new Error(data.message || "Something went wrong.");
         return data;

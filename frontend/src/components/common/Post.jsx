@@ -11,6 +11,7 @@ import { toast } from "react-hot-toast";
 import LoadingSpinner from "../common/LoadingSpinner";
 import { formatDistanceToNow } from 'date-fns';
 import { formatPostDate } from "../../utils";
+import { API } from "../../apiClient.js";
 const Post = ({ post }) => {
   const {data: authUser} = useQuery({queryKey:["authUser"], queryFn:['authUser']});
   const [comment, setComment] = useState("");
@@ -24,7 +25,7 @@ const queryClient = useQueryClient();
   const {mutate:likePost, isPending:isLiking} = useMutation({
     mutationFn:async()=>{
       try{
-        const res = await fetch(`/api/posts/likes/${post._id}`,{
+        const res = await fetch(`${API}/api/posts/likes/${post._id}`,{
           method: "POST"
         });
         const data = await res.json();
@@ -53,7 +54,7 @@ const queryClient = useQueryClient();
   const {mutate:deletePost, isPending:isDeleting} = useMutation({
     mutationFn: async() =>{
       try{
-        const res = await fetch (`/api/posts/${post._id}`,{
+        const res = await fetch (`${API}/api/posts/${post._id}`,{
           method:"DELETE"
         });
         const data = res.json();
@@ -76,7 +77,7 @@ const queryClient = useQueryClient();
   const {mutate: commentPost, isPending:isCommenting} = useMutation({
     mutationFn: async ()=>{
       try{
-        const res = await fetch (`/api/posts/comment/${post._id}`,{
+        const res = await fetch (`${API}/api/posts/comment/${post._id}`,{
           method: "POST",
           headers:{
             "Content-Type": "application/json",
@@ -105,7 +106,7 @@ const queryClient = useQueryClient();
   const {mutate: deleteComment, isPending: isDeletingComment} = useMutation({
     mutationFn: async(commentId)=>{
       try {
-        const res = await fetch(`/api/posts/${post._id}/comment/${commentId}`,{
+        const res = await fetch(`${API}/api/posts/${post._id}/comment/${commentId}`,{
           method: "DELETE"
         });
         const data = await res.json();

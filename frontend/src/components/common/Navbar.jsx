@@ -5,6 +5,7 @@ import { IoIosMenu } from "react-icons/io";
 import { NavLink } from "react-router";
 import { useMutation, useQueryClient, useQuery } from "@tanstack/react-query";
 import { toast } from "react-hot-toast";
+import { API } from "../../apiClient";
 
 const Navbar = () => {
   const { data: authUser } = useQuery({
@@ -15,7 +16,7 @@ const Navbar = () => {
   const { mutate: logout } = useMutation({
     mutationFn: async () => {
       try {
-        const res = await fetch("/api/auth/logout", {
+        const res = await fetch(`${API}/api/auth/logout`, {
           method: "POST",
         });
 

@@ -8,6 +8,7 @@ import { useMutation, useQueryClient } from "@tanstack/react-query";
 import toast from "react-hot-toast";
 import { Link, useNavigate } from "react-router";
 import LoadingSpinner from "../../../components/common/LoadingSpinner";
+import { API } from "../../../apiClient.js";
 const SignupPage = () => {
   const [formData, setFormData] = useState({
     email: "",
@@ -20,7 +21,7 @@ const SignupPage = () => {
   const { mutate, isError, isPending, error } = useMutation({
     mutationFn: async ({ username, fullName, password, email }) => {
       try {
-        const res = await fetch("api/auth/signup", {
+        const res = await fetch(`${API}/api/auth/signup`, {
           method: "POST",
           headers: {
             "Content-Type": "application/json",
