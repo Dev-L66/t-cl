@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import {useState } from "react";
 import { Link } from "react-router";
 import { FaTrash } from "react-icons/fa";
 import { FaRegComment } from "react-icons/fa";
@@ -16,7 +16,7 @@ const Post = ({ post }) => {
   const [comment, setComment] = useState("");
   const postOwner = post.user;
   const isLiked = post.likes.includes(authUser?._id);
-
+console.log(API);
   const isMyPost = authUser?._id === post?.user?._id;
   let date = formatPostDate(post?.createdAt);  
 const queryClient = useQueryClient();
