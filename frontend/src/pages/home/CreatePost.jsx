@@ -97,7 +97,7 @@ const CreatePost = () => {
       <div className="flex justify-center p-4 gap-3">
         <div className="flex-shrink-0">
           <img
-            src={authUser.profileImg || "/avatar-placeholder.png"}
+            src={authUser?.profileImg || "/avatar-placeholder.png"}
             loading="lazy"
             alt="avatar"
             className="w-10 h-10 rounded-full"

@@ -111,7 +111,11 @@ export const loginController = async (req, res) => {
 //logout controller
 export const logoutController = async (req, res) => {
     try {
-        res.clearCookie("token");
+        res.clearCookie("token",{
+           httpOnly: true,
+      secure: process.env.NODE_ENV !== 'development',
+      sameSite: "none",
+        });
         return res.status(200).json({
             message: "Logged out successfully.",
             success: true,
