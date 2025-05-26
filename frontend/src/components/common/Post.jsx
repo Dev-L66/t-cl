@@ -9,9 +9,8 @@ import { FaBookmark } from "react-icons/fa";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { toast } from "react-hot-toast";
 import LoadingSpinner from "../common/LoadingSpinner";
-import { formatDistanceToNow } from 'date-fns';
 import { formatPostDate } from "../../utils";
-import { API } from "../../apiClient.js";
+import { API } from "../../utils/index.js";
 const Post = ({ post }) => {
   const {data: authUser} = useQuery({queryKey:["authUser"], queryFn:['authUser']});
   const [comment, setComment] = useState("");

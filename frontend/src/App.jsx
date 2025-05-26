@@ -9,7 +9,7 @@ import ProfilePage from "./pages/profile/ProfilePage";
 import { Toaster } from "react-hot-toast";
 import { useQuery } from "@tanstack/react-query";
 import LoadingSpinner from "./components/common/LoadingSpinner";
-import { API } from "./apiClient.js";
+import { API } from "./utils";
 
 const App = () => {
   const {data:authUser, isLoading, isError, error} = useQuery({

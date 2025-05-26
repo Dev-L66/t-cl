@@ -3,7 +3,7 @@ import RightPanelSkeleton from "../skeletons/RightPanelSkeleton.jsx";
 import { Link } from "react-router";
 import { useQuery } from "@tanstack/react-query";
 import LoadingSpinner from "../common/LoadingSpinner.jsx";
-import { API } from "../../apiClient.js";
+import { API } from "../../utils/index.js";
 
 const RightPanel = () => {
   const {data:suggestedUsers, isLoading}= useQuery({

@@ -6,7 +6,7 @@ import { useMutation, useQueryClient } from "@tanstack/react-query";
 import toast from "react-hot-toast";
 import { Link, useNavigate } from "react-router";
 import LoadingSpinner from "../../../components/common/LoadingSpinner";
-import { API } from "../../../apiClient.js";
+import { API } from "../../../utils/index.js";
 const SignupPage = () => {
   const [formData, setFormData] = useState({
     username: "",

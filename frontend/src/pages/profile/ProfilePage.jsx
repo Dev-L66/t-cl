@@ -12,7 +12,7 @@ import {  useQuery, useQueryClient } from "@tanstack/react-query";
 import { FaCalendarAlt } from "react-icons/fa";
 import LoadingSpinner from "../../components/common/LoadingSpinner";
 import useUpdateProfile from "../../hooks/useUpdateProfile";
-import { API } from "../../apiClient.js";
+import { API } from "../../utils/index.js";
 
 const ProfilePage = () => {
   const coverImgRef = useRef(null);

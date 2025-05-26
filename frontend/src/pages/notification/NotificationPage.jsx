@@ -4,7 +4,7 @@ import { FaUser, FaHeart, FaTrash } from "react-icons/fa";
 import { Link } from "react-router";
 import toast from "react-hot-toast";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import { API } from "../../apiClient.js";
+import { API } from "../../utils/index.js";
 const NotificationPage = () => {
 const queryClient = useQueryClient();
   const {data: notifications, isLoading: notificationsLoading} = useQuery({

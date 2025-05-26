@@ -5,7 +5,7 @@ import { useEffect, useRef, useState } from "react";
 import SmileyPicker from "./SmileyPicker";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { toast } from "react-hot-toast";
-import { API } from "../../apiClient.js";
+import { API } from "../../utils/index.js";
 
 const CreatePost = () => {
   const [picker, setPicker] = useState(false);

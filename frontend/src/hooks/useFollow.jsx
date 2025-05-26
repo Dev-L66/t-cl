@@ -1,6 +1,6 @@
 import { toast } from "react-hot-toast";
 import { useQueryClient, useMutation } from "@tanstack/react-query";
-import { API } from "../../apiClient.js";
+import { API } from "../utils/index.js";
 const useFollow = () => {
   const queryClient = useQueryClient();
   const { mutate:followUnfollow, isPending } = useMutation({

@@ -5,7 +5,7 @@ import { IoIosMenu } from "react-icons/io";
 import { NavLink } from "react-router";
 import { useMutation, useQueryClient, useQuery } from "@tanstack/react-query";
 import { toast } from "react-hot-toast";
-import { API } from "../../apiClient";
+import { API } from "../../utils/index.js";
 
 const Navbar = () => {
   const { data: authUser } = useQuery({

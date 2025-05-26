@@ -24,3 +24,6 @@ export const formatPostDate = (createdAt) => {
     return "Just now";
   }
 };
+
+
+export const API = process.env.VITE_API_URL || "http://localhost:5000";
