@@ -9,7 +9,6 @@ export const protectedRoute = async (req, res, next) => {
         error: "Unauthorized access. No token provided.",
       });
     }
-    console.log(token);
 
     const decoded = jwt.verify(token, process.env.JWT_SECRET);
 
