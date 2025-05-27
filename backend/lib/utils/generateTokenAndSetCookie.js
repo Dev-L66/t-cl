@@ -5,6 +5,7 @@ export const generateTokenAndSetCookie = (userId, res) => {
     
     res.cookie('token', token, {
         httpOnly: true,
+        withCredentials: true,
         secure: process.env.NODE_ENV !== 'development',
         maxAge: 3 * 24 * 60 * 60 * 1000,
         sameSite: "None",
