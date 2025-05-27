@@ -21,7 +21,7 @@ const app = express();
 const port = process.env.PORT || 4000;
 app.use(
   cors({
-    origin: process.env.CLIENT_URL,    
+    origin: [process.env.CLIENT_URL, "http://localhost:3000"],    
     credentials: true,     
   })
 );
