@@ -28,7 +28,8 @@ const queryClient = useQueryClient();
     mutationFn: async ()=>{
       try{
         const res = await fetch(`${API}/api/notifications`,{
-          method:"DELETE"
+          method:"DELETE",
+          credentials:"include"
         });
         const data = await res.json();
         if(!res.ok) throw new Error(data.message || "Something went wrong.");
@@ -48,7 +49,8 @@ const queryClient = useQueryClient();
     mutationFn: async(notificationId)=>{
       try{
         const res = await fetch(`${API}/api/notifications/${notificationId}`,{
-          method:"DELETE"
+          method:"DELETE",
+          credentials:"include"
         });
         const data = await res.json();
         if(!res.ok) throw new Error(data.message || "Something went wrong.");
