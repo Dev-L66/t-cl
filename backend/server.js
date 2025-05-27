@@ -22,18 +22,21 @@ const port = process.env.PORT || 4000;
 app.use(
   cors({
     origin: [process.env.CLIENT_URL, "http://localhost:3000"],  
-    credentials: true,     
+    credentials: true, 
+        
   })
 );
 app.use(express.json({ limit: '5mb' }));
 app.use(express.urlencoded({ extended: true }));
 app.use(cookieParser());
 
+app.set('trust proxy', 1);
 
 let limiter = rateLimit({
     max: 500,
     windowMs: 60 * 60 * 1000,
-    message: {status: 429, message:"Too many requests from this IP, please try again after an hour"}
+    message: {status: 429, message:"Too many requests from this IP, please try again after an hour"},
+
 });
 app.use('/api', limiter);
 app.use('/api/auth', authRoutes);
