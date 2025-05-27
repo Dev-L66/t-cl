@@ -8,7 +8,7 @@ import { Link, useParams } from "react-router";
 import Posts from "../../components/common/Posts";
 import ProfileHeaderSkeleton from "../../components/skeletons/ProfileHeaderSkeleton";
 import useFollow from "../../hooks/useFollow";
-import {  useQuery, useQueryClient } from "@tanstack/react-query";
+import {  useQuery } from "@tanstack/react-query";
 import { FaCalendarAlt } from "react-icons/fa";
 import LoadingSpinner from "../../components/common/LoadingSpinner";
 import useUpdateProfile from "../../hooks/useUpdateProfile";
