@@ -109,7 +109,7 @@ const queryClient = useQueryClient();
             </span>
           </div>
         )}
-        {!notifications && (<p>No notifications found.</p>)}
+        {!notificationsLoading && !notifications && (<p>No notifications found.</p>)}
         {!notificationsLoading &&
           notifications?.map((notification) => (
             <div key={notification._id}>
