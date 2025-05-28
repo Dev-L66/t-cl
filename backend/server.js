@@ -24,8 +24,8 @@ app.use(
   cors({
     origin: [process.env.CLIENT_URL, "http://localhost:3000"],  
     credentials: true, 
-    methods: ['GET', 'POST', 'PUT', 'DELETE'],
-    optionsSuccessStatus: 200,
+    // methods: ['GET', 'POST', 'PUT', 'DELETE'],
+    // optionsSuccessStatus: 200,
   })
 );
 app.use(express.json({ limit: '5mb' }));
@@ -33,14 +33,14 @@ app.use(express.urlencoded({ extended: true }));
 app.use(cookieParser());
 
 
-// let limiter = rateLimit({
-//     max: 500,
-//     windowMs: 60 * 60 * 1000,
-//     message: {status: 429, message:"Too many requests from this IP, please try again after an hour"},
-//     validate: {xForwardedForHeader: false}
+let limiter = rateLimit({
+    max: 500,
+    windowMs: 60 * 60 * 1000,
+    message: {status: 429, message:"Too many requests from this IP, please try again after an hour"},
+    validate: {xForwardedForHeader: false}
 
-// });
-// app.use('/api', limiter);
+});
+app.use('/api', limiter);
 app.use('/api/auth', authRoutes);
 app.use('/api/users', userRoutes);
 app.use('/api/posts', postRoutes);
