@@ -20,12 +20,22 @@ cloudinary.config({
 const app = express();
 const port = process.env.PORT || 4000;
 
+const allowedOrigins = [
+  "http://localhost:3000",
+  process.env.CLIENT_URL,
+];
+
 app.use(
   cors({
-    origin: [process.env.CLIENT_URL, "http://localhost:3000"],  
-    credentials: true, 
-    methods: ["GET", "POST", "PUT", "DELETE", 'OPTIONS'],
-    allowedHeaders: ['Content-Type', 'Authorization', 'Cookie'],
+    origin: function (origin, callback) {
+      if (!origin || allowedOrigins.includes(origin)) {
+        return callback(null, true);
+      }
+      return callback(new Error("CORS: Origin not allowed"), false);
+    },
+    credentials: true, // allows cookies and Authorization headers
+    methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
+    allowedHeaders: ["Content-Type", "Authorization"],
   })
 );
 app.use(express.json({ limit: '5mb' }));
