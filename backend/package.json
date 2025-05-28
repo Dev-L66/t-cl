@@ -26,7 +26,6 @@
     "zod": "^3.25.28"
   },
   "devDependencies": {
-    "cross-env": "^7.0.3",
     "nodemon": "^3.1.10"
   }
 }
