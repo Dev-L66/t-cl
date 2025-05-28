@@ -8,7 +8,7 @@ import dotenv from 'dotenv';
 import connectToDb from './config/db.config.js';
 import cookieParser from 'cookie-parser';
 import { v2 as cloudinary } from 'cloudinary';
-// import rateLimit from 'express-rate-limit';
+import rateLimit from 'express-rate-limit';
 
 dotenv.config();
 cloudinary.config({
