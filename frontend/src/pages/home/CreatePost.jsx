@@ -21,7 +21,7 @@ const CreatePost = () => {
   const queryClient = useQueryClient();
   const {data:authUser} = useQuery({queryKey:["authUser"], queryFn:["authUser"]});
  
-  const {mutate:createPost, isPending, isError, error} = useMutation({
+  const {mutate:createPost, isPending:isPosting, isError, error} = useMutation({
     mutationFn: async ({text, img})=>{
       try{
        const res = await fetch(`${API}/api/posts/create`,{
@@ -160,8 +160,8 @@ const CreatePost = () => {
             </div>
             
             {!picker && (
-              <button type="submit" disabled={charCount > maxChars || (charCount === 0 && !image)} className={`disabled:opacity-25 bg-primary text-secondary text-xs font-bold px-4 py-2 rounded-full`}>
-                Post
+              <button type="submit" disabled={charCount > maxChars || (charCount === 0 && !image) || isPosting} className={`disabled:opacity-25 bg-primary text-secondary text-xs font-bold px-4 py-2 rounded-full`}>
+                {isPosting ? "Posting..." : "Post"}
               </button>
             )}
           </div>
