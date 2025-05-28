@@ -8,7 +8,7 @@ import dotenv from 'dotenv';
 import connectToDb from './config/db.config.js';
 import cookieParser from 'cookie-parser';
 import { v2 as cloudinary } from 'cloudinary';
-import rateLimit from 'express-rate-limit';
+// import rateLimit from 'express-rate-limit';
 
 dotenv.config();
 cloudinary.config({
@@ -33,14 +33,14 @@ app.use(express.urlencoded({ extended: true }));
 app.use(cookieParser());
 
 
-let limiter = rateLimit({
-    max: 500,
-    windowMs: 60 * 60 * 1000,
-    message: {status: 429, message:"Too many requests from this IP, please try again after an hour"},
-    validate: {xForwardedForHeader: false}
+// let limiter = rateLimit({
+//     max: 500,
+//     windowMs: 60 * 60 * 1000,
+//     message: {status: 429, message:"Too many requests from this IP, please try again after an hour"},
+//     validate: {xForwardedForHeader: false}
 
-});
-app.use('/api', limiter);
+// });
+// app.use('/api', limiter);
 app.use('/api/auth', authRoutes);
 app.use('/api/users', userRoutes);
 app.use('/api/posts', postRoutes);
