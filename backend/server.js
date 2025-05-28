@@ -19,12 +19,13 @@ cloudinary.config({
 
 const app = express();
 const port = process.env.PORT || 4000;
+
 app.use(
   cors({
     origin: [process.env.CLIENT_URL, "http://localhost:3000"],  
     credentials: true, 
     methods: ['GET', 'POST', 'PUT', 'DELETE'],
-    optionsSuccessStatus: 200
+    optionsSuccessStatus: 200,
   })
 );
 app.use(express.json({ limit: '5mb' }));
@@ -36,6 +37,7 @@ let limiter = rateLimit({
     max: 500,
     windowMs: 60 * 60 * 1000,
     message: {status: 429, message:"Too many requests from this IP, please try again after an hour"},
+    validate: {xForwardedForHeader: false}
 
 });
 app.use('/api', limiter);
