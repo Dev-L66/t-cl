@@ -21,7 +21,7 @@ const App = () => {
           credentials:"include",
         });
         const data = await res.json();
-        
+        console.log(API);
         if(!res.ok) throw new Error(data.error || "Something went wrong.");
         return data;
       }catch(error){
