@@ -8,7 +8,5 @@ export const generateTokenAndSetCookie = (userId, res) => {
         secure: process.env.NODE_ENV === 'production',
         maxAge: 3 * 24 * 60 * 60 * 1000, 
         sameSite: process.env.NODE_ENV === "production" ? "none" : "lax",
-        path: '/',
-        domain: 'l-cl-backend.vercel.app',
         });
 }
