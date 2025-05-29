@@ -33,10 +33,10 @@ app.use(
     allowedHeaders: ["Content-Type", "Authorization", 'Cookie'],
   })
 );
-app.use(cookieParser());
+
 app.use(express.json({ limit: '5mb' }));
 app.use(express.urlencoded({ extended: true }));
-
+app.use(cookieParser());
 
 
 let limiter = rateLimit({
