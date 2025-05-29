@@ -43,6 +43,8 @@ let limiter = rateLimit({
     validate: {xForwardedForHeader: false}
 
 });
+
+
 app.use('/api', limiter);
 app.use('/api/auth', authRoutes);
 app.use('/api/users', userRoutes);
