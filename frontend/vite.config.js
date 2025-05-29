@@ -8,12 +8,12 @@ export default defineConfig({
   server:{
     host: true,
     port: 3000,
-    // proxy: {
-    //   "/api":{
-    //     target: "http://localhost:5000",
-    //     changeOrigin: true
-    //   }
-    // }
-
+    proxy: {
+      '/api': {
+        target: 'http://localhost:4000',
+        changeOrigin: true,
+        secure: false,
+      },
+    },
   }
 })
