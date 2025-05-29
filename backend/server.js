@@ -20,7 +20,7 @@ cloudinary.config({
 const app = express();
 const port = process.env.PORT || 4000;
 
-const allowedOrigins = "https://l-cl-frontend-xi.vercel.app";
+const allowedOrigins = "https://l-cl-frontend.vercel.app";
 
 app.use(
   cors({
