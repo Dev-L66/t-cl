@@ -48,6 +48,7 @@ export const createPost = async (req, res) => {
       text,
       img,
     });
+    await newPost.populate({ path: "user", select: "username profileImg" });
     await newPost.save();
     console.log(newPost);
     return res.status(201).json(newPost);
