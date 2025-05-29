@@ -1,6 +1,6 @@
 import Post from './Post';
-import PostSkeleton from '../skeletons/PostSkeleton';
-import { useQuery } from '@tanstack/react-query';
+// import PostSkeleton from '../skeletons/PostSkeleton';
+import { QueryClient, useQuery } from '@tanstack/react-query';
 import { useEffect } from 'react';
 import { API } from '../../utils/index.js';
 
@@ -47,6 +47,8 @@ const Posts = ({feedType, username, userId}) => {
         throw error;
       }
     },
+    
+   
   });
 
  useEffect(()=>{
@@ -54,13 +56,13 @@ const Posts = ({feedType, username, userId}) => {
  },[feedType, refetch]);
   return (
     <>
-    {isLoading || isRefetching&& (
+    {/* {isLoading || isRefetching && (
       <div>
       <PostSkeleton/>
       <PostSkeleton/>
       <PostSkeleton/>
       </div>
-    )}
+    )} */}
     {!isLoading &&!isRefetching && posts?.length === 0 &&
       (<p className='text-3xl text-secondary font-bold text-center flex justify-center items-center h-screen'>No posts found.</p>)
     }

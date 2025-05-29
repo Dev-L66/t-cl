@@ -40,11 +40,12 @@ const CreatePost = () => {
         throw new Error(error);
       }
     },
-     onSuccess: () => {
+     onSuccess: (newPost) => {
       setText("");
       setImage("");
       toast.success("Post created succesfully!");
-      queryClient.invalidateQueries({ queryKey: ["posts"] });
+      queryClient.setQueryData(["posts"], (oldData) => [{...newPost, user: authUser, profileImg: authUser?.profileImg},...oldData]);
+    
     },
   })
   useEffect(()=>{
@@ -159,11 +160,14 @@ const CreatePost = () => {
               <span>{charCount}/{maxChars}</span>
             </div>
             
-            {!picker && (
-              <button type="submit" disabled={charCount > maxChars || (charCount === 0 && !image) || isPosting} className={`disabled:opacity-25 bg-primary text-secondary text-xs font-bold px-4 py-2 rounded-full`}>
-                {isPosting ? "Posting..." : "Post"}
-              </button>
-            )}
+           <button
+  type="submit"
+  disabled={picker || charCount > maxChars || (charCount === 0 && !image) || isPosting}
+  className="disabled:opacity-25 bg-primary text-secondary text-xs font-bold px-4 py-2 rounded-full"
+>
+  {isPosting ? "Posting..." : "Post"}
+</button>
+
           </div>
           {isError && <p className="text-red-500">{error.message}</p>}
         </form>

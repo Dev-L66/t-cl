@@ -16,7 +16,7 @@ const Post = ({ post }) => {
   const [comment, setComment] = useState("");
   const postOwner = post.user;
   const isLiked = post.likes.includes(authUser?._id);
-console.log(API);
+// console.log(API);
   const isMyPost = authUser?._id === post?.user?._id;
   let date = formatPostDate(post?.createdAt);  
 const queryClient = useQueryClient();
@@ -70,8 +70,7 @@ const queryClient = useQueryClient();
     },
     onSuccess:()=>{
       toast.success("Post deleted successfully!");
-      queryClient.invalidateQueries({queryKey:["posts"]});
-      
+      queryClient.setQueryData(["posts"], (oldData)=> oldData.filter((p)=> p._id !== post._id));
 
     }
   })
@@ -98,8 +97,8 @@ const queryClient = useQueryClient();
     onSuccess:()=>{
       toast.success("Comment added successfully!");
       setComment("");
+     
       queryClient.invalidateQueries({queryKey:["posts"]});
-  
     },
     onError:(error)=>{
       toast.error(error.message);
@@ -263,6 +262,7 @@ const queryClient = useQueryClient();
                 />
               </div>
               <div className="flex justify-end gap-2">
+               
                <button
                   className="btn btn-primary rounded-2xl"
                   type="submit"
@@ -270,10 +270,11 @@ const queryClient = useQueryClient();
                 >
                  Post
                 </button>
-                <button className="btn btn-danger rounded-2xl" onClick={() => document.getElementById(`my_modal_5${post._id}`).close()}>Close</button>
+                <button disabled={isCommenting} className="btn btn-danger rounded-2xl" onClick={(e) =>e.preventDefault() || document.getElementById(`my_modal_5${post._id}`).close()}>Close</button>
               </div>
             </form>
-             
+
+
           </div>
         </dialog>
         <FaRetweet />
