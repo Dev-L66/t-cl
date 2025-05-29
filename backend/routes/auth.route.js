@@ -3,7 +3,7 @@ import { signupController, loginController, logoutController, getMeController } 
 import { protectedRoute } from '../middleware/protectedRoute.js';
 
 const router = express.Router();
-router.get('/test', (req, res) => res.send('Hello World!'));
+
 router.post('/signup', signupController);
 router.post('/login', loginController);
 router.get('/me',protectedRoute, getMeController);
