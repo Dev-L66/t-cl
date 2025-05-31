@@ -44,8 +44,8 @@ export const signupController = async (req, res) => {
       fullName,
       email,
       password: hashPassword,
-    });
-
+    }); 
+    
     if (user) {
       await sendWelcomeMail(email, username);
       generateTokenAndSetCookie(user._id, res);

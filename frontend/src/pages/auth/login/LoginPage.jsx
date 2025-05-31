@@ -7,7 +7,7 @@ import toast from "react-hot-toast";
 import { Link, useNavigate } from "react-router";
 import LoadingSpinner from "../../../components/common/LoadingSpinner";
 import { API } from "../../../utils/index.js";
-const SignupPage = () => {
+const LoginPage = () => {
   const [formData, setFormData] = useState({
     username: "",
     password: "",
@@ -130,4 +130,4 @@ const SignupPage = () => {
   );
 };
 
-export default SignupPage;
+export default LoginPage;
