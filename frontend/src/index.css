@@ -1,0 +1,24 @@
+@import "tailwindcss";
+
+@plugin "daisyui" {
+  themes: black --default;
+   --breakpoint-xs: 30rem;
+}
+@plugin "daisyui/theme" {
+  name: "black";
+  default: true;
+  --color-primary: #472A4F;
+  --color-secondary: #C8A2C8;
+  
+}
+
+.fontColor{
+  color: #c6a0ee;
+}
+input:-webkit-autofill {
+  background-color: transparent !important;
+  -webkit-text-fill-color: white !important;
+  transition: background-color 5000s ease-in-out 0s;
+}
+
+
